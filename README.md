@@ -1,6 +1,6 @@
 # Arch
 
-> share & conclusion architectures what I study & used.
+> share & conclusion architectures
 
 Case Study
 
@@ -14,7 +14,7 @@ Case Study
 License
 ---
 
-[![Phodal's Book](http://brand.phodal.com/shields/book-small.svg)](https://www.phodal.com/)    [![Phodal's Idea](http://brand.phodal.com/shields/idea-small.svg)](http://ideas.phodal.com/)
+[![Phodal's Book](http://brand.phodal.com/shields/book-small.svg)](https://www.phodal.com/)
 
 © 2016 [Phodal Huang](https://www.phodal.com). This code is distributed under the Creative Commons Attribution-Noncommercial-No Derivative Works 3.0  License. See `LICENSE` in this directory.
 
