@@ -2,11 +2,12 @@
 
 > share & conclusion architectures
 
-Case Study
+Case Study （ToC）
+---
 
  - Layer (Spring MVC)
  - Frontend Backend Separation (Spring Boot + Angular.js)
- - CQRS Website (MySQL + ElasticSearch)
+ - CQRS Website (MySQL + ElasticSearch + Django + HayStack)
  - Pure Static Website ( Editing-Publishing Separation, Cache-base Website)
  - MicroServices (Spring Boot + Scala + Express)
  - Message Queue & Event (TBC)
