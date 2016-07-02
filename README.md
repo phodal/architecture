@@ -7,6 +7,8 @@
 
 关于架构方面的书籍有相当的多，这只是我对于我所知道并实践过的架构知识的总结。换句话来说，这是我的又一次[RePractise](https://github.com/phodal/repractise)。
 
+作为[Growth](https://github.com/phodal/growth)计划的一部分，这一本电子书的内容会围绕架构以及解决方案两个目标而展开。
+
 Case Study (ToC in Draft)
 
  - Layer (Spring MVC)
