@@ -4,9 +4,13 @@
 分层是最常见的架构模式了，除此还有
 
 
+
 ![Presentation Business Data Layer](./images/pbd.png)
 
 图为表示层、业务逻辑层、数据访问层
+
+MVC
+---
 
 ![MVC](./images/mvc.png)
 

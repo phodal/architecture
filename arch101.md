@@ -5,9 +5,13 @@
 分层是最常见的架构模式了，除此还有
 
 
+
 ![Presentation Business Data Layer](./images/pbd.png)
 
 图为表示层、业务逻辑层、数据访问层
+
+MVC
+---
 
 ![MVC](./images/mvc.png)
 
@@ -32,8 +36,22 @@ Clean
 读写分离
 ===
 
+编辑-发布分离
+---
+
 命令与查询职责分离
 ===
+
+
+
+CQRS
+---
+
+
+实践
+---
+
+MySQL / SQL Server + ElasticSearch
 
 静态
 ===
@@ -47,11 +65,25 @@ Clean
 契约
 ===
 
-管理和过滤器
+前后端分离
+---
+
+管道和过滤器
 ===
+
+
+Unix管理
+---
+
+搜索
+---
 
 六边形架构
 ===
+
+
+Lan
+---
 
 前言
 ===
