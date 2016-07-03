@@ -20,7 +20,12 @@
 <div style="width:800px">
 <nav id="TOC">
 <ul>
-<li><a href="#分层">分层</a></li>
+<li><a href="#分层">分层</a><ul>
+<li><a href="#实践">实践</a><ul>
+<li><a href="#spring-mvc">Spring MVC</a></li>
+<li><a href="#项目结构">项目结构</a></li>
+</ul></li>
+</ul></li>
 <li><a href="#clean">Clean</a></li>
 <li><a href="#读写分离">读写分离</a></li>
 <li><a href="#命令与查询职责分离">命令与查询职责分离</a></li>
@@ -35,6 +40,24 @@
 </nav>
 <h1 id="分层">分层</h1>
 <p>分层是最常见的架构模式了，除此还有</p>
+<figure>
+<img src="./images/pbd.png" alt="Presentation Business Data Layer" /><figcaption>Presentation Business Data Layer</figcaption>
+</figure>
+<p>图为表示层、业务逻辑层、数据访问层</p>
+<figure>
+<img src="./images/mvc.png" alt="MVC" /><figcaption>MVC</figcaption>
+</figure>
+<h2 id="实践">实践</h2>
+<h3 id="spring-mvc">Spring MVC</h3>
+<h3 id="项目结构">项目结构</h3>
+<p>体现在项目目录结构上的分层</p>
+<ul>
+<li>controller</li>
+<li>interceptor</li>
+<li>model</li>
+<li>service</li>
+<li>transform / dao</li>
+</ul>
 <h1 id="clean">Clean</h1>
 <h1 id="读写分离">读写分离</h1>
 <h1 id="命令与查询职责分离">命令与查询职责分离</h1>
