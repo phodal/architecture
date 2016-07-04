@@ -10,9 +10,9 @@
 分层
 ===
 
-分层是最常见的架构模式了，除此还有
+分层[^1]是最常见的架构模式了。在我们的生活中，这也是很常见的一种设计模式。
 
-
+//TODO 需要一个例子
 
 ![Presentation Business Data Layer](./images/pbd.png)
 
@@ -20,6 +20,8 @@
 
 MVC
 ---
+
+下图亦为上中所说的分层结构：
 
 ![MVC](./images/mvc.png)
 
@@ -38,11 +40,15 @@ MVC
  - service
  - transform / dao
 
+[^1]: 让我们致敬Martin Fowler的《企业应用架构模式》
+
 读写分离
 ===
 
 页面缓存
 ---
+
+![HTTP Cache](./images/httpcachemiss.png)
 
 编辑-发布分离
 ---
@@ -50,25 +56,61 @@ MVC
 命令与查询职责分离
 ===
 
-
-
 CQRS
 ---
 
 
-实践
+Django CQRS
 ---
+
+
+![Django CQRS](./images/django-cqrs.png)
+
+ - 当用户、管理员创建或者更新新的对象时，对象将被保存到数据。并且依据我们对HayStack的设定，我们将会即时或定时将数据索引到ElasticSearch中。
+ - 当用户搜索时，通过ElasticSearch来进行搜索。
+
+在这个过程中，我们主要依赖于HayStack作为Message Queue来将数据从数据库导入搜索引擎。
 
 MySQL / SQL Server + ElasticSearch
 
 静态
 ===
 
+静态是最好的解
+---
+
+GitHub Page
+---
+
+下图是基于Jekyll的GitHub Page的生成过程[^jekyll]
+
+![静态网站](./images/what-is-a-static-website.png)
+
+静态网站生成
+---
+
+[^jekyll]: 引自http://jekyllbootstrap.com/
+
 微服务
 ===
 
+微内核与宏内核
+---
+
+> 单内核：也称为宏内核。将内核从整体上作为一个大过程实现，并同时运行在一个单独的地址空间。所有的内核服务都在一个地址空间运行，相互之间直接调用函数，简单高效。微内核：功能被划分成独立的过程，过程间通过IPC进行通信。模块化程度高，一个服务失效不会影响另外一个服务。Linux是一个单内核结构，同时又吸收了微内核的优点：模块化设计，支持动态装载内核模块。Linux还避免了微内核设计上的缺陷，让一切都运行在内核态，直接调用函数，无需消息传递。
+
+>微内核――在微内核中，大部分内核都作为单独的进程在特权状态下运行，他们通过消息传递进行通讯。在典型情况下，每个概念模块都有一个进程。因此，假如在设计中有一个系统调用模块，那么就必然有一个相应的进程来接收系统调用，并和能够执行系统调用的其他进程（或模块）通讯以完成所需任务。
+
+Hurd之死
+
 消息队列
 ===
+
+Cron Job
+---
+
+ActiveMQ
+---
 
 契约
 ===

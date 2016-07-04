@@ -1,9 +1,9 @@
 分层
 ===
 
-分层是最常见的架构模式了，除此还有
+分层[^1]是最常见的架构模式了。在我们的生活中，这也是很常见的一种设计模式。
 
-
+//TODO 需要一个例子
 
 ![Presentation Business Data Layer](./images/pbd.png)
 
@@ -11,6 +11,8 @@
 
 MVC
 ---
+
+下图亦为上中所说的分层结构：
 
 ![MVC](./images/mvc.png)
 
@@ -28,3 +30,5 @@ MVC
  - model
  - service
  - transform / dao
+
+[^1]: 让我们致敬Martin Fowler的《企业应用架构模式》
