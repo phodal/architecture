@@ -70,6 +70,8 @@ MVC
 实践
 ---
 
+可惜的是，我对Spring MVC已经有些疏远了，在搭建的过程中经常犯一些新手错误。
+
 ### Spring MVC
 
 [^1]: 让我们致敬Martin Fowler的《企业应用架构模式》
@@ -84,6 +86,16 @@ MVC
 
 编辑-发布分离
 ---
+
+编辑-发布分离[^EditingPublishingSeparation]
+
+让我愉快地盗图了：
+
+![编辑-发布分离](./images/edit-pub.png)
+
+
+
+[^EditingPublishingSeparation]: 即Editing Publishing Separation，出自于Martin Fowler的相关文章 [EditingPublishingSeparation](http://martinfowler.com/bliki/EditingPublishingSeparation.html)
 
 命令与查询职责分离
 ===
