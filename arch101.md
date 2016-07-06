@@ -25,20 +25,52 @@ MVC
 
 ![MVC](./images/mvc.png)
 
-实践
----
-
-### Spring MVC
 
 ### 项目结构
 
-体现在项目目录结构上的分层
+体现在项目目录结构上的分层，如下是常见的Spring MVC项目的目录结构
 
  - controller
  - interceptor
  - model
  - service
- - transform / dao
+ - mapper
+ - transform
+
+类似的还有，Ruby On Rails的目录结构：
+
+ - assets
+ - controllers
+ - helpers
+ - mailers
+ - models
+ - views
+
+从这些结构里，我们可以看到xx
+
+当然，也会有一些更有趣的例子，如Python的Django默认的是这样的结构：
+
+```shell
+.
+├── accounts
+│   ├── __init__.py
+│   ├── migrations/
+│   ├── models.py
+│   ├── urls.py
+│   └── views.py
+└── aggregator
+    ├── __init__.py
+    ├── admin.py
+    ├── management/
+    ├── migrations/
+    ├── models.py
+    └── views.py
+```
+
+实践
+---
+
+### Spring MVC
 
 [^1]: 让我们致敬Martin Fowler的《企业应用架构模式》
 

@@ -40,10 +40,11 @@
 <ul>
 <li><a href="#前言">前言</a></li>
 <li><a href="#分层">分层</a><ul>
-<li><a href="#mvc">MVC</a></li>
+<li><a href="#mvc">MVC</a><ul>
+<li><a href="#项目结构">项目结构</a></li>
+</ul></li>
 <li><a href="#实践">实践</a><ul>
 <li><a href="#spring-mvc">Spring MVC</a></li>
-<li><a href="#项目结构">项目结构</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#读写分离">读写分离</a><ul>
@@ -99,17 +100,43 @@
 <figure>
 <img src="./images/mvc.png" alt="MVC" /><figcaption>MVC</figcaption>
 </figure>
-<h2 id="实践">实践</h2>
-<h3 id="spring-mvc">Spring MVC</h3>
 <h3 id="项目结构">项目结构</h3>
-<p>体现在项目目录结构上的分层</p>
+<p>体现在项目目录结构上的分层，如下是常见的Spring MVC项目的目录结构</p>
 <ul>
 <li>controller</li>
 <li>interceptor</li>
 <li>model</li>
 <li>service</li>
-<li>transform / dao</li>
+<li>mapper</li>
+<li>transform</li>
 </ul>
+<p>类似的还有，Ruby On Rails的目录结构：</p>
+<ul>
+<li>assets</li>
+<li>controllers</li>
+<li>helpers</li>
+<li>mailers</li>
+<li>models</li>
+<li>views</li>
+</ul>
+<p>从这些结构里，我们可以看到xx</p>
+<p>当然，也会有一些更有趣的例子，如Python的Django默认的是这样的结构：</p>
+<pre class="shell"><code>.
+├── accounts
+│   ├── __init__.py
+│   ├── migrations/
+│   ├── models.py
+│   ├── urls.py
+│   └── views.py
+└── aggregator
+    ├── __init__.py
+    ├── admin.py
+    ├── management/
+    ├── migrations/
+    ├── models.py
+    └── views.py</code></pre>
+<h2 id="实践">实践</h2>
+<h3 id="spring-mvc">Spring MVC</h3>
 <h1 id="读写分离">读写分离</h1>
 <h2 id="页面缓存">页面缓存</h2>
 <figure>
