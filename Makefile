@@ -1,6 +1,6 @@
 include_dir=build
 source=chapters/*.md
-title='架构初入'
+title='Growth：架构初入'
 filename='arch101'
 
 
