@@ -62,12 +62,14 @@
 </ul></li>
 <li><a href="#微服务">微服务</a><ul>
 <li><a href="#微内核与宏内核">微内核与宏内核</a></li>
+<li><a href="#hurd之死">Hurd之死</a></li>
 </ul></li>
 <li><a href="#消息队列">消息队列</a><ul>
 <li><a href="#cron-job">Cron Job</a></li>
 <li><a href="#activemq">ActiveMQ</a></li>
 </ul></li>
 <li><a href="#契约">契约</a><ul>
+<li><a href="#康威定律">康威定律</a></li>
 <li><a href="#前后端分离">前后端分离</a></li>
 </ul></li>
 <li><a href="#管道和过滤器">管道和过滤器</a><ul>
@@ -87,7 +89,6 @@
 <h1 id="前言">前言</h1>
 <p>工作两年过去了， 我发现我也学习、实践了一些架构方面的知识。原本我并没有意识到我也可以总结这方面的结识——对于一个刚工作两年的人来说，这有点出乎意料。总结对于自己来说，是一个非常有益的过程。只有当我们总结了自己的知识时，我们才能意识到我们学习到了怎样的知识。</p>
 <p>关于架构方面的书籍有相当的多，这只是我对于我所知道并实践过的架构知识的总结。换句话来说，这是我的又一次<a href="https://github.com/phodal/repractise">RePractise</a>。</p>
-<p>作为<a href="https://github.com/phodal/growth">Growth</a>计划的一部分，这一本电子书的内容会围绕架构以及解决方案两个目标而展开。</p>
 <h1 id="分层">分层</h1>
 <p>分层<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>是最常见的架构模式了。在我们的生活中，这也是很常见的一种设计模式。</p>
 <p>//TODO 需要一个例子</p>
@@ -139,17 +140,19 @@
 <p>可惜的是，我对Spring MVC已经有些疏远了，在搭建的过程中经常犯一些新手错误。</p>
 <h3 id="spring-mvc">Spring MVC</h3>
 <h1 id="读写分离">读写分离</h1>
+<p>读写分离有一个常见的实践就是页面缓存。我们使用缓存服务器对用户常访问的内容进行缓存，如变成静态文件。这时候它就是一个很简单的读写分离。</p>
 <h2 id="页面缓存">页面缓存</h2>
 <figure>
 <img src="./images/httpcachemiss.png" alt="HTTP Cache" /><figcaption>HTTP Cache</figcaption>
 </figure>
 <h2 id="编辑-发布分离">编辑-发布分离</h2>
 <p>编辑-发布分离<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
-<p>让我愉快地盗图了：</p>
+<p>让我愉快地盗张图：</p>
 <figure>
 <img src="./images/edit-pub.png" alt="编辑-发布分离" /><figcaption>编辑-发布分离</figcaption>
 </figure>
 <h1 id="命令与查询职责分离">命令与查询职责分离</h1>
+<p>命令与查询职责分离主要用于那些查询多，而插入少的应用程序，如搜索网站等等。网站客户的数据、网站用户使用的持久化数据中心不是同一个，如我们可以SQL来存储客户的数据，通过消息队列将数据导入搜索引擎中，提供给网站用户使用。</p>
 <h2 id="cqrs">CQRS</h2>
 <h2 id="django-cqrs">Django CQRS</h2>
 <figure>
@@ -177,11 +180,12 @@
 <blockquote>
 <p>微内核――在微内核中，大部分内核都作为单独的进程在特权状态下运行，他们通过消息传递进行通讯。在典型情况下，每个概念模块都有一个进程。因此，假如在设计中有一个系统调用模块，那么就必然有一个相应的进程来接收系统调用，并和能够执行系统调用的其他进程（或模块）通讯以完成所需任务。</p>
 </blockquote>
-<p>Hurd之死</p>
+<h2 id="hurd之死">Hurd之死</h2>
 <h1 id="消息队列">消息队列</h1>
 <h2 id="cron-job">Cron Job</h2>
 <h2 id="activemq">ActiveMQ</h2>
 <h1 id="契约">契约</h1>
+<h2 id="康威定律">康威定律</h2>
 <h2 id="前后端分离">前后端分离</h2>
 <p>我们在后台使用Spring MVC作为基础架构、Mustache作为模板引擎，和使用JSP作为模板引擎相比没有多大的区别——由Controller去获取对应的Model，再渲染给用户。多数时候搜索引擎都是依据Sitemap来进行索引的，所以我们的后台很容易就可以处理这些请求。同样的当用户访问相应的页面的时候，也返回同样的页面内容。当完成页面渲染的时候，就交由Backbone来处理相应的逻辑了。换句话来说，从这时候它就变成了一个单页面应用。</p>
 <figure>
