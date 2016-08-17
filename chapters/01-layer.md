@@ -1,25 +1,9 @@
 分层
 ===
 
-分层[^1]是最常见的架构模式了。在我们的生活中，这也是很常见的一种设计模式。
+分层[^1]是最常见的架构模式。这种形式的分层在代码中的体现比较明显——我们很容易可以从项目的代码中，毕竟它可以直接体现在项目目录结构上。
 
-//TODO 需要一个例子
-
-![Presentation Business Data Layer](./images/pbd.png)
-
-图为表示层、业务逻辑层、数据访问层
-
-MVC
----
-
-下图亦为上中所说的分层结构：
-
-![MVC](./images/mvc.png)
-
-
-### 项目结构
-
-体现在项目目录结构上的分层，如下是常见的Spring MVC项目的目录结构
+如下是常见的Spring MVC项目的目录结构：
 
  - controller
  - interceptor
@@ -36,6 +20,28 @@ MVC
  - mailers
  - models
  - views
+
+相似功能的代码以文件夹的形式归纳到一起：
+
+ - 将控制器的相关逻辑放至controllers目录中，由它来对请求进行转发，并进行处理。
+ - 将一些请求在进入控制器之前的代码放置interceptor中，由其对用户的那些不需要直接交由controller的请求做特殊做处理。
+ - 在model中放置模型相关的代码，如数据的管理、数据库的设计等等。
+ - mapper?
+ - 将业务逻辑相关的代码放置service目录，由其来对领域知识做一些抽象，而不是交由controller来负责。
+ - 我们将一些模型转换为API的操作放置在transform目录中。
+
+
+
+![Presentation Business Data Layer](./images/pbd.png)
+
+图为表示层、业务逻辑层、数据访问层
+
+MVC
+---
+
+下图亦为上中所说的分层结构：
+
+![MVC](./images/mvc.png)
 
 从这些结构里，我们可以看到xx
 

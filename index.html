@@ -40,9 +40,7 @@
 <ul>
 <li><a href="#前言">前言</a></li>
 <li><a href="#分层">分层</a><ul>
-<li><a href="#mvc">MVC</a><ul>
-<li><a href="#项目结构">项目结构</a></li>
-</ul></li>
+<li><a href="#mvc">MVC</a></li>
 <li><a href="#实践">实践</a><ul>
 <li><a href="#spring-mvc">Spring MVC</a></li>
 </ul></li>
@@ -91,19 +89,8 @@
 <p>工作两年过去了， 我发现我也学习、实践了一些架构方面的知识。原本我并没有意识到我也可以总结这方面的结识——对于一个刚工作两年的人来说，这有点出乎意料。总结对于自己来说，是一个非常有益的过程。只有当我们总结了自己的知识时，我们才能意识到我们学习到了怎样的知识。</p>
 <p>关于架构方面的书籍有相当的多，这只是我对于我所知道并实践过的架构知识的总结。换句话来说，这是我的又一次<a href="https://github.com/phodal/repractise">RePractise</a>。</p>
 <h1 id="分层">分层</h1>
-<p>分层<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>是最常见的架构模式了。在我们的生活中，这也是很常见的一种设计模式。</p>
-<p>//TODO 需要一个例子</p>
-<figure>
-<img src="./images/pbd.png" alt="Presentation Business Data Layer" /><figcaption>Presentation Business Data Layer</figcaption>
-</figure>
-<p>图为表示层、业务逻辑层、数据访问层</p>
-<h2 id="mvc">MVC</h2>
-<p>下图亦为上中所说的分层结构：</p>
-<figure>
-<img src="./images/mvc.png" alt="MVC" /><figcaption>MVC</figcaption>
-</figure>
-<h3 id="项目结构">项目结构</h3>
-<p>体现在项目目录结构上的分层，如下是常见的Spring MVC项目的目录结构</p>
+<p>分层<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>是最常见的架构模式。这种形式的分层在代码中的体现比较明显——我们很容易可以从项目的代码中，毕竟它可以直接体现在项目目录结构上。</p>
+<p>如下是常见的Spring MVC项目的目录结构：</p>
 <ul>
 <li>controller</li>
 <li>interceptor</li>
@@ -121,6 +108,24 @@
 <li>models</li>
 <li>views</li>
 </ul>
+<p>相似功能的代码以文件夹的形式归纳到一起：</p>
+<ul>
+<li>将控制器的相关逻辑放至controllers目录中，由它来对请求进行转发，并进行处理。</li>
+<li>将一些请求在进入控制器之前的代码放置interceptor中，由其对用户的那些不需要直接交由controller的请求做特殊做处理。</li>
+<li>在model中放置模型相关的代码，如数据的管理、数据库的设计等等。</li>
+<li>mapper?</li>
+<li>将业务逻辑相关的代码放置service目录，由其来对领域知识做一些抽象，而不是交由controller来负责。</li>
+<li>我们将一些模型转换为API的操作放置在transform目录中。</li>
+</ul>
+<figure>
+<img src="./images/pbd.png" alt="Presentation Business Data Layer" /><figcaption>Presentation Business Data Layer</figcaption>
+</figure>
+<p>图为表示层、业务逻辑层、数据访问层</p>
+<h2 id="mvc">MVC</h2>
+<p>下图亦为上中所说的分层结构：</p>
+<figure>
+<img src="./images/mvc.png" alt="MVC" /><figcaption>MVC</figcaption>
+</figure>
 <p>从这些结构里，我们可以看到xx</p>
 <p>当然，也会有一些更有趣的例子，如Python的Django默认的是这样的结构：</p>
 <pre class="shell"><code>.
