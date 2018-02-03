@@ -256,6 +256,7 @@ Unix管理
 六边形架构
 ===
 
+首次看过这个架构的名字是在《领域驱动设计》一书中，后来这种架构风格也出现在我写的书里。
 
 Lan
 ---
@@ -280,3 +281,401 @@ Clean
 
 DDD
 ---
+
+【架构拾集】：一步步设计一个移动应用架构
+===
+
+> 如何 GET 架构设计的新技能
+
+在这一个多月里，我工作在一个采用插件化的原生 Android 应用项目上。随着新技术的引入，及编写原生 Android 代码的技能不断提升，我开始思索如何去解锁移动应用新架构。对，我就是在说 Growth 5.0。
+
+两星期前，我尝试使用了 Kotlin + React Native + Dore + WebView 搭建了一个简单的 Android 移动应用模板。为了尝试解决 Growth 3.0+ 出现的一系列问题：启动速度慢、架构复杂等等的问题。
+
+PS：作为 Architecture 练习计划的一部分，我将采用规范一些的叙述方式来展开。
+
+ 1. 业务架构
+ 2. 技术远景
+ 3. 方案对比
+ 4. 架构设计方案
+ 5. 持续集成设计
+ 6. 测试策略
+ 7. 架构实施
+
+即下图：
+
+![技术选型](../images/tech-inception.jpg)
+
+业务架构
+---
+
+> 技术是为了解决业务的问题而产生的。
+
+脱离了业务，技术就没有了存在的前提。脱离了业务的架构不叫 “架构”，而叫刷流氓，又或者是画大饼。业务由于其本身拥有其特定的技术场景，往往是对技术决策影响最大的部分。
+
+因此，开始之前让我们先了解一些业务，这里以 Growth 为例。
+
+Growth 的价值定位是：**带你成为顶尖开发者**。
+
+复杂一点的说明就是：_Growth_ **提供** _编程学习服务_ **使用** _Web开发路线_ **帮助** _新手 Web 程序员_ **解决** _Web 学习路径问题_。
+
+让我们来看一下，更复杂一些的说明（电梯演讲）：
+
+ -          |     - 
+------------|-----------
+对于        | 缺少 Web 体系经验的程序员
+他们有      | 书籍、在线教程、论坛、技术问答、练习项目
+我们的产品   | 编程学习软件 Growth
+是一个      | 移动应用
+它可以      | 涵盖Web开发的流程及技术栈，Web开发的学习路线、成长衡量等各方面。
+但他不同于  | segmentfault、知乎
+它的优势是  | 拥有完整的 Web 开发流程（知识图谱）、配套完整的电子书、提供练习及学习工具。
+
+在原有的业务架构下，我们拥有 Growth、探索、社区、练习四个核心业务，以及用户中心的功能。
+
+ - Growth（首页），即带有详细介绍的 Web 应用的生命周期，能帮助开发者理解 Web 应用的构建流程。
+ - 探索，以辅助开发者了解 Web 应用方方面面的知识，如常用工具、练手项目、技能测验、读书路线等等。
+ - 练习，通过这些练习项目，来帮助开发者更好的掌握知识。
+ - 社区，一个简易的论坛。
+ - 用户中心，一些用户的收藏数据、应用相关的设置等等。
+
+这就是业务上的主要架构，接下来让我们看看技术上的事务。
+
+技术远景
+---
+
+> 远景，即想象中未来的远大景象。技术远景，即想象中未来的技术方面的远大景象。
+
+在上一节中，我们介绍的是项目的业务远景。而作为一个技术人员，在一个项目里，我们也已经创建自己的技术远景。一来，我们可以创建出可持续演进的架构；二来，可以满足个人的技能需求。
+
+以 Growth 为例，我的最基本的技术需求是：提升自身的能力。然后才是一个跨平台的技术设施——减少构建时间。
+
+从 Growth 1.0、Growth 2.0 采用的 Ionic，到 Growth 3.0 采用的 React Native，它都优先采用新的技术来帮助自己成长，并使用了跨平台的移动应用开发框架。而这几个不同的版本里，也拥有其对应的不同技术问题
+
+ - Growth 1.0 主要是 Angular 1.x 的跳崖式升级，使之变成不可维护的系统。
+ - Growth 2.0 则是 Angular 2.x 那庞大的构建体积，带来了启动时间慢的问题。
+ - Growth 3.0 则是，React Native 生成的 ``index.android.bundle`` 文件有 3.1M，这个体积相当的大，以至于即使在高通的骁龙 835 处理器上，也需要 4~5 秒的打开时间。
+
+而在 Growth 5.0 的设计构架里，考虑到 React Native 本身的不加密，其对于应用来说，存在一些安全的风险。我决定引入 Native 的计划，来从架构上说明，这个系统在某种程度上也是可以加密的。
+
+因此，对于我而言，从技术上的期望就是：
+
+ - 使用新技术带来成长
+ - 让应用长期可维护
+ - 拥有跨平台的基础设施
+ - 插件化方案
+
+方案对比
+---
+
+对于普通的应用来说，其需要**从不同的方案中选择一个合适的方案**。其选择的核心，取决于项目所依赖的关键点。如在 Growth 有两个关键点：代码复用程度、应用性能。
+
+这个时候就需要罗列出不同系统的优缺点，并从中选择合适自己的一部分。
+
+如下数据（**纯属个人使用体验总结，没有任何的数据基础**）：
+
+   -       |   原生   | React Native  | NativeScript  | 混合应用
+-----------|----------|--------------|---------------|------------
+开发效率    |    2     |    4         |        3      |    5 
+跨平台程度  |    0     |    3         |        3      |    4
+性能		   |    5     |    4         |   4           |    2
+成熟度     |     5     |    4         |   3           |    5 
+安全性     |     5     |    3         |   4           |    2 
+总计       |    17      |   18        |   17          |  18
+
+PS：NativeScript 在安全性上比 React Native 好一点点的原因是，使用 NativeScript 的人相对少一点，所以技术成本就高一些。毕竟，macOS 和 Android 手机上也是有病毒的。
+
+考虑到我打算结合不同的几个框架，所以这里就不需要选择了。
+
+技术方案
+---
+
+在定下了基本的技术方案后，就差不多是时候进行架构设计了。
+
+现今的很多应用里，也是采用多种技术栈结合的架构，如淘宝的 Android 原生 + Weex + WebView，或者支付宝（不确定有没有 Weex）。但是，可以肯定的是几乎每个大型应用，都会在应用里嵌入 WebView。WebView 毕竟是可以轻松地进行远程动态更新，也需要原生代码那样的后台更新策略。
+
+在 Growth 3.0 里，我们选择了使用 React Native + WebView 的构建方式，其原因主要是 WebView 的生态圈比较成熟，有相当多的功能已经用 WebView 实现了。而在新版本的设计中，则系统变得稍微复杂一些：
+
+![架构图 2](../images/arche.jpg)
+
+从设计上来说，它拥有更好的扩展性，毕竟在安全上也更容易操作。然而，从技术栈上来说，它变得更加复杂。
+
+### Growth 技术方案
+
+**原生部分**
+
+系统在底层将采用原生的代码作为基础框架，而不再是 React Native 作为基础。再考虑到项目上正在实施的 Android 插件化方案，我打算在 Android 的 Native 部分使用 RePlugin 来引入一些更灵活的地特性。因此，从架构上来说，能满足个人的成长需求了。
+
+毕竟原生 Android 有些架构还是相当有意思的：
+
+![原生 Android 架构](../images/android-architecture.jpg)
+
+**React Native**
+
+React Native 从代码上的变化比较大，架构设计上从代码上切分出几个不同的页面。它**可能可以**在某种程度上 Bundle 文件过大，带来的加载速度慢的问题。因而，在某种程度上，可能带来更快的启动速度。
+
+**WebView**
+
+总体上来说，WebView 变化不会太大。除了，可能从 React Native 的 WebView 迁移到原生部分的 WebView 之外。
+
+持续集成设计
+---
+
+之前我们提到持续集成的时候，多数是指持续集成的实施。而今天我们谈到持续集成的时候，则是在讨论如何去设计。
+
+### 代码策略
+
+首先，就是代码策略，即代码管理策略。代码管理，指的就是决定采用哪种 git 工作流。会影响到代码管理的因素有：
+
+ - 上线功能。如某次发布要上线哪些功能，肯定会影响到正常的开发流程。
+ - 代码集成。当我们采用模块化、插件化来设计系统架构时，就需要将几个不同的的项目集成到一起。
+ - 代码合并。在有的项目里，人们会使用 PR 来提交代码，有的则是直接在 master 上提交，也有的采用 feature branch。
+ - 分支策略。什么时候，决定拉出新的分支？
+ - 修复 bug。当我们拉到一条新的分支时，我们要怎么去应对一个 bug 的出现呢？
+
+对于 Growth 而言，则仍然是 master 分支，采用多个 GitHub 项目的集成方式。
+
+### 工具箱
+
+作为一个有经验的程序员，我们应该在设计的初期考虑到我们所需要的工具：
+
+ - 基础设施，诸如 React Native 需要的 Node.js、Android 及 Java 需要的构建工具 Gradle
+ - 文档工具，诸如架构决策记录工具 ADR，
+ - 开发工具，编写 Android 应用需要的 Android Studio、编写 React Native 的 Intellij IDEA
+ - 依赖库，这些工具是我们
+ - 持续集成，在持续集成上可以采用 Travis CI
+ - 应用发布，APP 仍然使用 GitHub 和 pgyer.com 来进行测试版发布。至于后台 API，是否从 GitHub、Coding 上迁出，仍然有待商榷。
+
+这些也仍是我们在设计架构的过程中，需要考虑的一些因素。
+
+测试策略
+---
+
+一般情况下，我们要会采用测试金字塔：
+
+![测试金字塔](../images/test-pyramid.png)
+
+在这里，引用《全栈应用开发：精益实践》对于测试金字塔的分析：
+
+> 从图中我们可以发现：单元测试应该要是最多的，也是最底层的。其次才是服务测试，最后才是 UI 测试。大量的单元测试可以保证我们的基础函数是正常、正确工作的。而服务测试则是一门很有学问的测试，不仅仅只在测试我们自己提供的服务，也会测试我们依赖第三方提供的服务。在测试第三方提供的服务时，这就会变成一件有意思的事了。除此还有对功能和 UI 的测试，写这些测试可以减轻测试人员的工作量——毕竟这些工作量转向了开发人员来完成。
+
+而如果是架构混搭的应用来说，其的测试成本相当的大。因为要测试的部分是 3 + 1，即：
+
+ - 原生部分，采用原先代码的测试策略，如 JUnit
+ - React Native 部分，继续之前的 ``react-test-renderer`` 测试渲染、``jest`` 和 ``chai`` 测试业务逻辑
+ - WebView 部分，采用框架本身推荐的框架
+ - 组合部分，对于这部分来说，UI 上的测试会更加可靠，如在 Growth 3.0 中采用的 ``appium`` 就是一个不错的选择。
+
+架构实施
+---
+
+最后，让我们来看看我在两个星期前，搭的一个架子，用于作技术验证功能。一共由三部分组件：
+
+ - 使用 Kotlin 编写的原生代码
+ - 使用 React Native 编写的 Fragment
+ - 使用 Ionic 编写的 WebView 应用
+
+接下来看两个简单的代码示例：
+
+### 创建 React Native 的 Fragement
+
+如下是一个使用 React Native 编写的 Fragement 示例，它可以直接在原生的 Activity 上使用：
+
+```
+class ArcheReactFragment : ReactFragment() {
+    override val mainComponentName: String
+        get() = "RNArche"
+
+    private var mReactRootView: ReactRootView? = null
+    private var mReactInstanceManager: ReactInstanceManager? = null
+
+    @Nullable
+    override fun onCreateView(inflater: LayoutInflater?, group: ViewGroup?, savedInstanceState: Bundle?): ReactRootView? {
+        mReactRootView = ReactRootView(activity)
+        mReactInstanceManager = ReactInstanceManager.builder()
+                .setApplication(activity.application)
+                .setBundleAssetName("index.android.bundle")
+                .setJSMainModulePath("index")
+                .addPackage(MainReactPackage())
+                .setUseDeveloperSupport(BuildConfig.DEBUG)
+                .setInitialLifecycleState(LifecycleState.RESUMED)
+                .build()
+        mReactRootView!!.startReactApplication(mReactInstanceManager, "RNArche", null)
+        return mReactRootView
+    }
+}
+```
+
+除了将 React Native 切分成不同的几个子模块。对于一个 React Native 应用来说，它可以**注册多个 Component**
+
+```
+AppRegistry.registerComponent('RNArche', () => App);
+AppRegistry.registerComponent('RNArche2', () => App2);
+```
+
+这样一来说，可以在一个 React Native 应用里被原生部分多次调用不同的组件。
+
+### 简单的 WebView
+
+对于那些不需要原生组件的组件来说，可以直接由原生应用来对 WebView 处理。从逻辑上来说，这样的性能会更好一些：
+
+```
+@SuppressLint("SetJavaScriptEnabled")
+@Nullable
+override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    val view = inflater?.inflate(R.layout.fragment_webview, container, false)
+    mWebView = view?.findViewById(R.id.webview)
+
+    mWebView!!.loadUrl("file:///android_asset/www/index.html")
+
+    val webSettings = mWebView!!.settings
+    webSettings.javaScriptEnabled = true
+    mWebView!!.webViewClient = WebViewClient()
+
+    return view
+}
+```
+
+对，就是这么简单。
+
+结论
+---
+
+So，尝试去做这样的设计吧。
+
+![架构设计](../images/tech-inception.jpg)
+
+
+
+
+【架构拾集】前后端分离：不能微服务，那就使用 BFF 隔离
+===
+
+> 上星期的文章里，介绍了遗留系统迁移的一些经验，并推荐了《遗留系统：重建实战》。在这一篇文章里，将介绍使用前后端来改善现有系统。
+
+两年前，我工作在一个房地产搜索网站上。它是一个相关久远的系统，以至于我们在修 bug 的时候可以看到 10 年前的注释。当时，我们采用了采用绞杀者模式来对系统进行重写，即在**遗留系统外面增加新的功能做成微服务方式**。
+
+由于这是一个已经在线上的系统，因此在重写的过程中，仍然要保证旧的功能不被破坏。在旧有的系统中拥有一个维护不了的搜索引擎，为了替换这个搜索引擎，我们创建了一层 API 服务层——在一层 API 里，我们适配了旧的搜索引擎，并开发了新搜索引擎的适配层。在今天看来，它算是一种 BFF 的实现，并且这种迁移方式相当的可靠。
+
+本文将详细介绍这其中的迁移过程，以及其中的一些经验。
+
+概念
+---
+
+或许你在我之前的文章里已经了解了 BFF 是什么，又或许你已经从其它渠道了解到这方面的知识。如果没有的话，那么让我再简单地介绍一下：**什么是 BFF**？
+
+### BFF
+
+BFF，即 Backends For Frontends (服务于前端的后端)，也就是服务器设计 API 时会考虑前端的使用，并在服务端直接进行业务逻辑的处理。
+
+!,BFF.png)
+
+如我在《前端演进史,http://repractise.phodal.com/ 文章中所说，早期我们在设计系统 API 的时候，只是单纯地为前端（Web、Android、iOS 等等）提供一个模型（Model）的 JSON 序列化，并不会具体考虑前端的需求。如下是一个常规的 RESTful API，从设计上来说，它满足 RESTful API 的要求，但是并适合于前端使用。
+
+在这种情况下，我们需要进行一些处理，如对文字的截断等等。而使用 BFF 则意味着，它会多出一层业务处理及转发层。
+
+### 遗留系统
+---
+
+> 奶牛逐渐衰老，最终无奶可挤；然而与此同时，饲养成本却在上升。
+
+ - 几乎无法维护
+ - 代码遗失
+ - 逻辑不清
+ - 没有文档或者不够详细、看不懂
+ - 关键点遗失
+
+技术远景
+---
+
+演进式设计，软件本身应该是
+
+
+适用场景
+---
+
+迁移方案
+---
+
+### 从旧的逻辑中学习
+
+旧的系统中，会从系统中去构建一份地理位置的索引，并进行一系列复杂的操作，如先从静态文件中查询位置，再从 Google 中查询位置，最后从数据库中查询。而新的系统，则使用更新的静态文件来
+
+### 使用 BFF 层隔离
+
+测试策略
+---
+
+考虑到系统的兼容性，
+
+再一次回到测试金字塔上，由于使用的是新系统、新的语言，旧的单元测试必然是不可用的。而服务测试和 UI 测试则是可以兼容的，这主要取决于系统的设计。
+
+### 服务测试
+
+对于后台而言，我们仍然是从系统中读取数据库，最后显示的结果应该保持一致——只是可能是不同的数据库，又或者读取的方式从 ODBC 变成了 JDBC。对于前端开发者而言，后台并没有发生任何的变化——当然在没有 BFF 隔离层的情况下，可能就是多个请求变成了一个请求。
+
+如我们在上述系统中遇到的情况是，生成的 URL 和页面的标题应该是不变的，因此我们需要编写测试来对应 URL 和标题来测试：
+
+```
+title,url
+Phodal's Idea实战指南,https://github.com/phodal/ideabook
+一步步搭建物联网系统,https://github.com/phodal/designiot
+GitHub 漫游指南,https://github.com/phodal/github-roam
+RePractise,https://github.com/phodal/repractise
+Growth: 全栈增长工程师指南,https://github.com/phodal/growth-ebook
+Growth: 全栈增长工程师实战,https://github.com/phodal/growth-in-action
+我的职业是前端工程师,https://github.com/phodal/fe
+写给软件工程师看的硬件编程指南,https://github.com/phodal/make
+```
+
+先编写旧有系统的 URL 测试，然后一一验证内容是否一致即可。
+
+### 行为测试
+
+迁移旧的行为测试
+
+如 Cucumber:
+
+```
+# language: zh-CN
+功能: 失败的登录
+
+  场景大纲: 失败的登录
+    假设 当我在网站的首页
+    当 输入用户名 <用户名>
+    当 输入密码 <密码>
+    当 提交登录信息
+    那么 页面应该返回 "Error Page"
+
+    例子:
+      |用户名     |密码      |
+      |'Jan1'    |'password'|
+      |'Jan2'    |'password'|
+```
+
+业务不变的情况下，那么这些行为也是不变的，由于变化的是底层的实现。如之前的登录按钮的 id 是 ``login``，现在这个按钮的 id 可能变成了 ``new_login``。``new_login`` 绝对是一个取得很差的名字，下次重构的时候可能仍是 ``new_login``。
+
+或者 ThoughtWorks 出品的 Gauge：
+
+```
+失败的登录
+===
+
+     |用户名   |密码     |
+     |--------|--------|
+     |Jan1    |password|
+     |Jan2    |password|
+
+失败的登录
+-----------
+* 当我在网站的首页
+* 输入用户名 <用户名>
+* 输入密码 <密码>
+* 提交登录信息
+* 页面应该返回 "Error Page"
+```
+
+持续集成
+---
+
+
+
