@@ -3,10 +3,6 @@
 
 > 上星期的文章里，介绍了遗留系统迁移的一些经验，并推荐了《遗留系统：重建实战》。在这一篇文章里，将介绍使用前后端来改善现有系统。
 
-两年前，我工作在一个房地产搜索网站上。它是一个相关久远的系统，以至于我们在修 bug 的时候可以看到 10 年前的注释。当时，我们采用了采用绞杀者模式来对系统进行重写，即在**遗留系统外面增加新的功能做成微服务方式**。
-
-由于这是一个已经在线上的系统，因此在重写的过程中，仍然要保证旧的功能不被破坏。在旧有的系统中拥有一个维护不了的搜索引擎，为了替换这个搜索引擎，我们创建了一层 API 服务层——在一层 API 里，我们适配了旧的搜索引擎，并开发了新搜索引擎的适配层。在今天看来，它算是一种 BFF 的实现，并且这种迁移方式相当的可靠。
-
 本文将详细介绍这其中的迁移过程，以及其中的一些经验。
 
 技术远景
@@ -20,7 +16,7 @@
 
 BFF，即 Backends For Frontends (服务于前端的后端)，也就是服务器设计 API 时会考虑前端的使用，并在服务端直接进行业务逻辑的处理。
 
-![BFF)(../images/bff.jpg)
+![BFF)(http://architecture.phodal.com//images/bff.jpg)
 
 如我在《前端演进史,http://repractise.phodal.com/ 文章中所说，早期我们在设计系统 API 的时候，只是单纯地为前端（Web、Android、iOS 等等）提供一个模型（Model）的 JSON 序列化，并不会具体考虑前端的需求。如下是一个常规的 RESTful API，从设计上来说，它满足 RESTful API 的要求，但是并适合于前端使用。
 
@@ -36,11 +32,11 @@ BFF，即 Backends For Frontends (服务于前端的后端)，也就是服务器
 
 让我们回到 Web 1.0 时代，看看那个时候的网站架构：
 
-![1.0 早期的网站](../images/bff-1-0.jpg)
+![1.0 早期的网站](http://architecture.phodal.com//images/bff-1-0.jpg)
 
 系统看上去是如何的简洁，由于只是尝试线上的业务也不多。然后，十多年前我们开始应对移动设备，适配出了一层 API 层：
 
-![2.0 新的移动趋势](../images/bff-2-0.jpg)
+![2.0 新的移动趋势](http://architecture.phodal.com//images/bff-2-0.jpg)
 
 这一层适配出来的 API，并不是精心设计的。它可能只是一一将数据库的 Scheme：
 
@@ -51,21 +47,21 @@ CREATE TABLE contents (
   `title` varchar(255),
   `author` varchar(255),
   `body` text,
-  ...
+  http://architecture.phodal.com/.
 ) TYPE=MyISAM;
 ```
 
 在代码中将这些对象转化成 JSON，然后提供给前端使用。而随着 Web 应用的交互变得越来越复杂，PC 端也开始大量地使用 API，而不是后台渲染：
 
-![2.5 创建 API 层](../images/bff-2-5.jpg)
+![2.5 创建 API 层](http://architecture.phodal.com//images/bff-2-5.jpg)
 
 先前后台直接将数据库中的值返回给前端，而每当值发生一些变化时，需要 Android、iOS、Web 做出修改。与此同时，当我们需要对一个字符串进行处理，如限定 140 个字符的时候，我们需要在每一个客户端（Android、iOS、Web）分别实现一遍，这样的代价显然相当的大。于是，我们就需要 BFF 作为中间件。在这个中间件上我们将做一些业务逻辑处理：
 
-![2.75 BFF 层](../images/bff-2-75.jpg)
+![2.75 BFF 层](http://architecture.phodal.com//images/bff-2-75.jpg)
 
 而当我们有了这一层 BFF 层时，我们就不需要考虑系统后端的迁移。后端发生的变化都可以在 BFF 层上，做一些相应的修改：
 
-![后端微服务化](../images/bff-3-0.jpg)
+![后端微服务化](http://architecture.phodal.com//images/bff-3-0.jpg)
 
 直至，我们将系统的前端和后端重构到新的架构上，前端与后端之间相互不像影响。
 
@@ -102,7 +98,7 @@ Growth: 全栈增长工程师实战,https://github.com/phodal/growth-in-action
 
 而如果我们先前的 UI 测试是使用 BDD 架构编写的，那么我们便可以继续沿用之前的行为。同时，我们只需要修改一下测试脚本的实现：
 
-![BDD](../images/bdd-layers.png)
+![BDD](http://architecture.phodal.com//images/bdd-layers.png)
 
 以 Cucumber 为例:
 
@@ -144,3 +140,15 @@ Growth: 全栈增长工程师实战,https://github.com/phodal/growth-in-action
 * 提交登录信息
 * 页面应该返回 "Error Page"
 ```
+
+案例
+---
+
+两年前，我工作在一个房地产搜索网站上。它是一个相关久远的系统，以至于我们在修 bug 的时候可以看到 10 年前的注释。当时，我们采用了采用绞杀者模式来对系统进行重写，即在**遗留系统外面增加新的功能做成微服务方式**。
+
+由于这是一个已经在线上的系统，因此在重写的过程中，仍然要保证旧的功能不被破坏。在旧有的系统中拥有一个维护不了的搜索引擎，为了替换这个搜索引擎，我们创建了一层 API 服务层——在一层 API 里，我们适配了旧的搜索引擎，并开发了新搜索引擎的适配层。在今天看来，它算是一种 BFF 的实现，并且这种迁移方式相当的可靠。
+
+结论
+---
+
+尽管如此，要直接从旧的系统直接采用 BFF 也不是一件容易的事。我们需要隔离好不同环境，并做好大量的技术准备。
